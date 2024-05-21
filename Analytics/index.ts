@@ -36,7 +36,7 @@ export class Analytics implements ComponentFramework.StandardControl<IInputs, IO
     private getRandomColumn(): string {
         // Get a random column name from the available properties in _rows
         //const columns = Object.keys(this._rows);
-        const columns = Object.keys(this._rows[3]);
+        const columns = Object.keys(this._rows[0]).filter((col) => col !== 'ID');;
         const remainingColumns = columns.filter((col) => !this._selectedColumns.has(col));
         if (remainingColumns.length === 0) {
             // All columns have been mapped; reset the set
