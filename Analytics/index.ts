@@ -1,6 +1,6 @@
 import { IInputs, IOutputs } from "./generated/ManifestTypes";
 import { Chart, BarController, BarElement, LinearScale, CategoryScale } from 'chart.js';
-import 'style.css';
+import "./style.css";
 
 Chart.register(BarController, BarElement, LinearScale, CategoryScale);
 
@@ -47,6 +47,12 @@ export class Analytics implements ComponentFramework.StandardControl<IInputs, IO
         this._selectedColumns.add(selectedColumn); // Mark as selected
         return selectedColumn;
     }
+    private getRandomColor(): string {
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+        return `rgba(${r}, ${g}, ${b}, 0.6)`;
+    }
 
     private renderRandomCharts(): void {
         try {
@@ -61,7 +67,8 @@ export class Analytics implements ComponentFramework.StandardControl<IInputs, IO
            
            
            const data = labels.map((label: unknown) => this._rows.filter((row: any) => row[randomColumn] === label as string).length);
-
+           const backgroundColor = this.getRandomColor()
+           //const backgroundColor = data.map(() => this.getRandomColor());
            //const data = labels.map((label: string) => this._rows.filter((row: any) => row[randomColumn] === label).length);
             //const data = labels.map((label: string) => this._rows[randomColumn][label]);
             console.log(data)
@@ -78,7 +85,7 @@ export class Analytics implements ComponentFramework.StandardControl<IInputs, IO
                         {
                             label: `Random Data from ${randomColumn}`,
                             data,
-                            backgroundColor: "rgba(75, 192, 192, 0.6)",
+                            backgroundColor,
                         },
                     ],
                 },
