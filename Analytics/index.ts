@@ -9,6 +9,7 @@ export class Analytics implements ComponentFramework.StandardControl<IInputs, IO
     private _container: HTMLDivElement;
     private _chartCanvas: HTMLCanvasElement;
     private _rows: any;
+    private _randomColumn: any;
     private _selectedColumns: Set<string>; // Store selected columns
     private _chart: Chart | null = null; // Add this line
 
@@ -30,7 +31,7 @@ export class Analytics implements ComponentFramework.StandardControl<IInputs, IO
         this._container.appendChild(this._chartCanvas);
 
         // Call a function to render random charts based on the dynamic schema data
-        this.renderRandomCharts();
+        this.renderRandomCharts(notifyOutputChanged);
     }
 
     private getRandomColumn(): string {
@@ -38,6 +39,7 @@ export class Analytics implements ComponentFramework.StandardControl<IInputs, IO
         //const columns = Object.keys(this._rows);
         const columns = Object.keys(this._rows[0]).filter((col) => col !== 'ID');
         const remainingColumns = columns.filter((col) => !this._selectedColumns.has(col));
+       
         if (remainingColumns.length === 0) {
             // All columns have been mapped; reset the set
             this._selectedColumns.clear();
@@ -54,11 +56,13 @@ export class Analytics implements ComponentFramework.StandardControl<IInputs, IO
         return `rgba(${r}, ${g}, ${b}, 0.6)`;
     }
 
-    private renderRandomCharts(): void {
+    private renderRandomCharts(notifyOutputChanged: () => void): void {
         try {
             this.destroy();
             // Example: Generate random data using a randomly selected column
             const randomColumn = this.getRandomColumn();
+            this._randomColumn = randomColumn;
+            notifyOutputChanged();
             //const labels = Object.keys(this._rows[randomColumn]);
             
             const labels = [...new Set(this._rows.map((row: any) => row[randomColumn]))];
@@ -113,7 +117,9 @@ export class Analytics implements ComponentFramework.StandardControl<IInputs, IO
     }
 
     public getOutputs(): IOutputs {
-        return {}; // Return any necessary outputs
+        return {
+            RandomColumn:this._randomColumn
+        }; // Return any necessary outputs
     }
 
     public destroy(): void {
